@@ -16,9 +16,9 @@ export interface UserState {
 export function defaultSetting(): UserState {
   return {
     userInfo: {
-      avatar: '',
-      name: '',
-      description: '',
+      avatar: 'http://8.219.115.178:666/app/1.PNG',
+      name: 'AssassinY',
+      description: '<a href="https://www.knjw1.top/" class="text-blue-500" target="_blank" >网盘</a>',
       root: false,
     },
   }
