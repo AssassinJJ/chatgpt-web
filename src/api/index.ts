@@ -1,19 +1,7 @@
 import type { AxiosProgressEvent, GenericAbortSignal } from 'axios'
 import { get, post } from '@/utils/request'
-import type { AuditConfig, ConfigState, MailConfig, SiteConfig } from '@/components/common/Setting/model'
+import type { AuditConfig, CHATMODEL, ConfigState, KeyConfig, MailConfig, SiteConfig, Status, UserRole } from '@/components/common/Setting/model'
 import { useAuthStore, useSettingStore } from '@/store'
-
-export function fetchChatAPI<T = any>(
-  prompt: string,
-  options?: { conversationId?: string; parentMessageId?: string },
-  signal?: GenericAbortSignal,
-) {
-  return post<T>({
-    url: '/chat',
-    data: { prompt, options },
-    signal,
-  })
-}
 
 export function fetchChatConfig<T = any>() {
   return post<T>({
@@ -56,6 +44,20 @@ export function fetchChatAPIProcess<T = any>(
     data,
     signal: params.signal,
     onDownloadProgress: params.onDownloadProgress,
+  })
+}
+
+export function fetchChatStopResponding<T = any>(text: string, messageId: string, conversationId: string) {
+  return post<T>({
+    url: '/chat-abort',
+    data: { text, messageId, conversationId },
+  })
+}
+
+export function fetchChatResponseoHistory<T = any>(roomId: number, uuid: number, index: number) {
+  return get<T>({
+    url: '/chat-response-history',
+    data: { roomId, uuid, index },
   })
 }
 
@@ -114,6 +116,34 @@ export function fetchUpdateUserInfo<T = any>(name: string, avatar: string, descr
   })
 }
 
+export function fetchUpdateUserChatModel<T = any>(chatModel: CHATMODEL) {
+  return post<T>({
+    url: '/user-chat-model',
+    data: { chatModel },
+  })
+}
+
+export function fetchGetUsers<T = any>(page: number, size: number) {
+  return get<T>({
+    url: '/users',
+    data: { page, size },
+  })
+}
+
+export function fetchUpdateUserStatus<T = any>(userId: string, status: Status) {
+  return post<T>({
+    url: '/user-status',
+    data: { userId, status },
+  })
+}
+
+export function fetchUpdateUserRole<T = any>(userId: string, roles: UserRole[]) {
+  return post<T>({
+    url: '/user-role',
+    data: { userId, roles },
+  })
+}
+
 export function fetchGetChatRooms<T = any>() {
   return get<T>({
     url: '/chatrooms',
@@ -141,6 +171,13 @@ export function fetchUpdateChatRoomPrompt<T = any>(prompt: string, roomId: numbe
   })
 }
 
+export function fetchUpdateChatRoomUsingContext<T = any>(using: boolean, roomId: number) {
+  return post<T>({
+    url: '/room-context',
+    data: { using, roomId },
+  })
+}
+
 export function fetchDeleteChatRoom<T = any>(roomId: number) {
   return post<T>({
     url: '/room-delete',
@@ -150,7 +187,7 @@ export function fetchDeleteChatRoom<T = any>(roomId: number) {
 
 export function fetchGetChatHistory<T = any>(roomId: number, lastId?: number) {
   return get<T>({
-    url: `/chat-hisroty?roomId=${roomId}&lastId=${lastId}`,
+    url: `/chat-history?roomId=${roomId}&lastId=${lastId}`,
   })
 }
 
@@ -214,5 +251,33 @@ export function fetchUpdateBaseSetting<T = any>(config: ConfigState) {
   return post<T>({
     url: '/setting-base',
     data: config,
+  })
+}
+
+export function fetchUserStatistics<T = any>(start: number, end: number) {
+  return post<T>({
+    url: '/statistics/by-day',
+    data: { start, end },
+  })
+}
+
+export function fetchGetKeys<T = any>(page: number, size: number) {
+  return get<T>({
+    url: '/setting-keys',
+    data: { page, size },
+  })
+}
+
+export function fetchUpdateApiKeyStatus<T = any>(id: string, status: Status) {
+  return post<T>({
+    url: '/setting-key-status',
+    data: { id, status },
+  })
+}
+
+export function fetchUpsertApiKey<T = any>(keyConfig: KeyConfig) {
+  return post<T>({
+    url: '/setting-key-upsert',
+    data: keyConfig,
   })
 }
